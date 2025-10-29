@@ -1,31 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function Question({ question, onAnswered }) {
-  const [timeRemaining, setTimeRemaining] = useState(10);
+  const [secondsRemaining, setSecondsRemaining] = useState(10);
 
-  // add useEffect code
+  useEffect(() => {
 
-  function handleAnswer(isCorrect) {
-    setTimeRemaining(10);
-    onAnswered(isCorrect);
-  }
+    const timeoutId = setTimeout(() => {
+      setSecondsRemaining((prev) => prev - 1);
+    }, 1000);
 
-  const { id, prompt, answers, correctIndex } = question;
+    
+    if (secondsRemaining === 0) {
+      onAnswered(false);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [secondsRemaining, onAnswered]);
 
   return (
-    <>
-      <h1>Question {id}</h1>
-      <h3>{prompt}</h3>
-      {answers.map((answer, index) => {
-        const isCorrect = index === correctIndex;
-        return (
-          <button key={answer} onClick={() => handleAnswer(isCorrect)}>
-            {answer}
-          </button>
-        );
-      })}
-      <h5>{timeRemaining} seconds remaining</h5>
-    </>
+    <div>
+      <h2>{question.prompt}</h2>
+      <p>{secondsRemaining} seconds remaining</p>
+      {/* Render answers here if needed */}
+    </div>
   );
 }
 
